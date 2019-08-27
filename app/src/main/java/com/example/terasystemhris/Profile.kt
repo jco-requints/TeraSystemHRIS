@@ -11,7 +11,7 @@ import androidx.databinding.DataBindingUtil
 import com.example.terasystemhris.databinding.ActivityProfileBinding
 import kotlinx.android.synthetic.main.activity_profile.*
 
-class profile : AppCompatActivity() {
+class Profile : AppCompatActivity() {
 
     private lateinit var binding: ActivityProfileBinding
 
@@ -20,10 +20,11 @@ class profile : AppCompatActivity() {
         setContentView(R.layout.activity_profile)
         setSupportActionBar(findViewById(R.id.activity_profile_toolbar))
         binding = DataBindingUtil.setContentView(this, R.layout.activity_profile)
+
+
         val intent = intent
         val extras = intent.extras
         val username_string = extras?.getString("EXTRA_USERNAME")
-        val password_string = extras?.getString("EXTRA_PASSWORD")
         val empID_string = extras?.getString("EXTRA_EMPID")
         val firstname_string = extras?.getString("EXTRA_FIRSTNAME")
         val middlename_string = extras?.getString("EXTRA_MIDDLENAME")
@@ -31,15 +32,13 @@ class profile : AppCompatActivity() {
         val email_string = extras?.getString("EXTRA_EMAIL")
         val mobile_string = extras?.getString("EXTRA_MOBILE")
         val landline_string = extras?.getString("EXTRA_LANDLINE")
-        val profile_name: String
-
-        if(middlename_string != "")
+        val profile_name = if(middlename_string != "")
         {
-            profile_name = ("$firstname_string $middlename_string $lastname_string").toUpperCase()
+            ("$firstname_string $middlename_string $lastname_string").toUpperCase()
         }
         else
         {
-            profile_name = ("$firstname_string $lastname_string").toUpperCase()
+            ("$firstname_string $lastname_string").toUpperCase()
         }
 
         name_text.text = profile_name
@@ -51,12 +50,12 @@ class profile : AppCompatActivity() {
         initials.text = "$firstNameInitial$lastNameInitial"
 
         binding.updateButton.setOnClickListener {
-            updateProfile(it, username_string, password_string, empID_string,
+            updateProfile(it, username_string, empID_string,
                 firstname_string, middlename_string, lastname_string,
                 email_string, mobile_string, landline_string)
         }
         binding.logoutButton.setOnClickListener{
-            val intent = Intent(this@profile, MainActivity::class.java).apply {
+            val intent = Intent(this@Profile, MainActivity::class.java).apply {
                 this.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             startActivity(intent)
@@ -84,18 +83,18 @@ class profile : AppCompatActivity() {
         val mobile_initials: String
         val hide_mobile: String
         var masked_mobile: String = ""
-        if(mobile?.count() == 16)
+        if(mobile?.count() == 13)
         {
             country_code = mobile.substring(0..2)
-            mobile_initials = mobile.substring(3..7)
-            hide_mobile = mobile.substring(11..15)
-            masked_mobile = "$country_code$mobile_initials***$hide_mobile"
+            mobile_initials = mobile.substring(3..5)
+            hide_mobile = mobile.substring(9..12)
+            masked_mobile = "$country_code $mobile_initials *** $hide_mobile"
         }
-        else if(mobile?.count() == 13)
+        else if(mobile?.count() == 11)
         {
-            mobile_initials = mobile.substring(0..4)
-            hide_mobile = mobile.substring(8..12)
-            masked_mobile = "$mobile_initials***$hide_mobile"
+            mobile_initials = mobile.substring(0..3)
+            hide_mobile = mobile.substring(7..10)
+            masked_mobile = "$mobile_initials *** $hide_mobile"
         }
         return  masked_mobile
     }
@@ -103,7 +102,6 @@ class profile : AppCompatActivity() {
     private fun updateProfile(
         view: View,
         username_string: String?,
-        password_string: String?,
         empID_string: String?,
         firstname_string: String?,
         middlename_string: String?,
@@ -115,10 +113,9 @@ class profile : AppCompatActivity() {
 
 
         binding.apply {
-            val intent = Intent(this@profile, Update::class.java).apply {
+            val intent = Intent(this@Profile, Update::class.java).apply {
                     val extras = Bundle()
                     extras.putString("EXTRA_USERNAME", username_string)
-                    extras.putString("EXTRA_PASSWORD", password_string)
                     extras.putString("EXTRA_EMPID", empID_string)
                     extras.putString("EXTRA_FIRSTNAME", firstname_string)
                     extras.putString("EXTRA_MIDDLENAME", middlename_string)
@@ -139,7 +136,7 @@ class profile : AppCompatActivity() {
     fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         return if (keyCode == KeyEvent.KEYCODE_BACK) {
             super.onBackPressed()
-            val intent = Intent(this@profile, MainActivity::class.java).apply {
+            val intent = Intent(this@Profile, MainActivity::class.java).apply {
                 this.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             startActivity(intent)

@@ -9,9 +9,6 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import com.example.terasystemhris.databinding.ActivitySuccessBinding
-import com.example.terasystemhris.databinding.ActivityUpdateBinding
-import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
-
 
 
 class Success : AppCompatActivity() {
@@ -21,15 +18,11 @@ class Success : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_success)
-//        val actionBar = supportActionBar // or getActionBar();
-//        supportActionBar!!.title = "Success" // set the top title
-//        val title = actionBar!!.title.toString() // get the title
         setSupportActionBar(findViewById(R.id.activity_success_toolbar))
         binding = DataBindingUtil.setContentView(this, R.layout.activity_success)
         val intent = intent
         val extras = intent.extras
         val username_string = intent.getStringExtra("EXTRA_USERNAME")
-        val password_string = extras?.getString("EXTRA_PASSWORD")
         val empID_string = extras?.getString("EXTRA_EMPID")
         val firstname_string = extras?.getString("EXTRA_FIRSTNAME")
         val middlename_string = extras?.getString("EXTRA_MIDDLENAME")
@@ -39,7 +32,7 @@ class Success : AppCompatActivity() {
         val landline_string = extras?.getString("EXTRA_LANDLINE")
 
         binding.okButton.setOnClickListener {
-            saveNewProfile(it, username_string, password_string, empID_string,
+            saveNewProfile(it, username_string, empID_string,
                 firstname_string, middlename_string, lastname_string,
                 email_string, mobile_string, landline_string)
         }
@@ -50,7 +43,6 @@ class Success : AppCompatActivity() {
     private fun saveNewProfile(
         view: View,
         username_string: String?,
-        password_string: String?,
         empID_string: String?,
         firstname_string: String?,
         middlename_string: String?,
@@ -62,10 +54,9 @@ class Success : AppCompatActivity() {
 
 
         binding.apply {
-            val intent = Intent(this@Success, profile::class.java).apply {
+            val intent = Intent(this@Success, Profile::class.java).apply {
                 val extras = Bundle()
                 extras.putString("EXTRA_USERNAME", username_string)
-                extras.putString("EXTRA_PASSWORD", password_string)
                 extras.putString("EXTRA_EMPID", empID_string)
                 extras.putString("EXTRA_FIRSTNAME", firstname_string)
                 extras.putString("EXTRA_MIDDLENAME", middlename_string)
@@ -87,8 +78,7 @@ class Success : AppCompatActivity() {
             val intent = intent
             val extras = intent.extras
             val username_string = intent.getStringExtra("EXTRA_USERNAME")
-            val password_string = extras?.getString("EXTRA_PASSWORD")
-            val empID_string = extras?.getString("EXTRA_EMPID")
+            val empID_string: String? = extras?.getString("EXTRA_EMPID")
             val firstname_string = extras?.getString("EXTRA_FIRSTNAME")
             val middlename_string = extras?.getString("EXTRA_MIDDLENAME")
             val lastname_string = extras?.getString("EXTRA_LASTNAME")
@@ -96,11 +86,10 @@ class Success : AppCompatActivity() {
             val mobile_string = extras?.getString("EXTRA_MOBILE")
             val landline_string = extras?.getString("EXTRA_LANDLINE")
             binding.apply {
-                val intent = Intent(this@Success, profile::class.java).apply {
+                val intent = Intent(this@Success, Profile::class.java).apply {
                     val extras = Bundle()
                     extras.putString("EXTRA_USERNAME", username_string)
-                    extras.putString("EXTRA_PASSWORD", password_string)
-                    extras.putString("EXTRA_EMPID", empID_string)
+                    extras.putString("EXTRA_EMPID", username_string)
                     extras.putString("EXTRA_FIRSTNAME", firstname_string)
                     extras.putString("EXTRA_MIDDLENAME", middlename_string)
                     extras.putString("EXTRA_LASTNAME", lastname_string)

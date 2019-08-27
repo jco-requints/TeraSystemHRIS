@@ -3,97 +3,108 @@ package com.example.terasystemhris
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import com.example.terasystemhris.databinding.ActivityMainBinding
 import android.widget.Toast
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.view.KeyEvent
 import android.webkit.WebSettings
 import kotlinx.android.synthetic.main.activity_webview.*
 import android.view.KeyEvent.KEYCODE_BACK
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import kotlinx.android.synthetic.main.activity_main.*
+import org.json.JSONObject
+import java.net.URL
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NetworkRequestInterface {
 
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        val mURL = URL("http://222.222.222.71:9080/MobileAppTraining/AppTrainingLogin.htm").toString()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
         binding.loginButton.setOnClickListener {
             if (userId_edit.text.trim().toString() == "")
             {
-                userId_edit.setError("User ID is required")
-
+                userId_edit.error = "User ID is required"
             }
             if(password_edit.text.trim().toString() == "")
             {
-                password_edit.setError("Password is required")
+                password_edit.error = "Password is required"
             }
             if(userId_edit.text.trim().toString() != "" && password_edit.text.trim().toString() != "")
-            authenticateCredentials(it)
-        }
-        binding.signupButton.setOnClickListener {
-            setContentView(R.layout.activity_webview)
-            val settings = webview.settings
-            // Enable java script in web view
-            settings.javaScriptEnabled = true
-
-            // Enable and setup web view cache
-            settings.setAppCacheEnabled(true)
-            settings.cacheMode = WebSettings.LOAD_DEFAULT
-            settings.setAppCachePath(cacheDir.path)
-
-
-            // Enable zooming in web view
-            settings.setSupportZoom(true)
-            settings.builtInZoomControls = true
-            settings.displayZoomControls = true
-            webview.loadUrl("http://www.terasystem.com")
-        }
-    }
-
-    private fun authenticateCredentials(view: View) {
-
-
-        binding.apply {
-            var isValid = true
-            for(account in list)
             {
-                if(userIdEdit.text.toString() == account.userID && passwordEdit.text.toString() == account.password)
-                {
-                    val intent = Intent(this@MainActivity, profile::class.java).apply {
-                        val extras = Bundle()
-                        extras.putString("EXTRA_USERNAME", account.userID)
-                        extras.putString("EXTRA_PASSWORD", account.password)
-                        extras.putString("EXTRA_EMPID", account.empID)
-                        extras.putString("EXTRA_FIRSTNAME", account.firstname)
-                        extras.putString("EXTRA_MIDDLENAME", account.middlename)
-                        extras.putString("EXTRA_LASTNAME", account.lastname)
-                        extras.putString("EXTRA_EMAIL", account.email)
-                        extras.putString("EXTRA_MOBILE", account.mobile)
-                        extras.putString("EXTRA_LANDLINE", account.landline)
-                        this.putExtras(extras)
-                    }
-                    startActivity(intent)
-                    isValid = true
-                    break
-//                    startActivity(Intent(this@MainActivity, profile::class.java).apply {
-//                        putExtras(bundleOf("EXTRA_USERNAME" to account.userID,
-//                            "EXTRA_PASSWORD" to account.password))
-//                    })
+                if (isConnected(this)) {
+                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(it.windowToken, 0)
+                    userId_edit.clearFocus()
+                    password_edit.clearFocus()
+                    FetchCredentials(this).execute(mURL, userId_edit.text.toString(), password_edit.text.toString())
                 }
                 else
                 {
-                    isValid = false
+                    popupHolder.visibility = View.VISIBLE
+                    network_status.text = getString(R.string.no_internet_message)
                 }
             }
-            if(!isValid)
+        }
+        binding.signupButton.setOnClickListener {
+            val intent = Intent(this@MainActivity, WebView::class.java)
+            startActivity(intent)
+        }
+
+        txtclose.setOnClickListener {
+            popupHolder.visibility = View.GONE
+        }
+
+    }
+
+    override fun beforeNetworkCall() {
+        progressBarHolder.visibility = View.VISIBLE
+    }
+
+    override fun afterNetworkCall(result: String?) {
+        progressBarHolder.visibility = View.GONE
+        if (result == "Connection Timeout") {
+            popupHolder.visibility = View.VISIBLE
+            network_status.text = getString(R.string.connection_timeout_message)
+        }
+        else if(result.isNullOrEmpty())
+        {
+            popupHolder.visibility = View.VISIBLE
+            network_status.text = getString(R.string.server_error)
+        }
+        else
+        {
+            var jsonObject = JSONObject(result)
+            val status = jsonObject?.get("status").toString()
+            if(status == "0")
+            {
+                jsonObject = jsonObject.getJSONObject("user")
+                binding.apply {
+                    val intent = Intent(this@MainActivity, Profile::class.java).apply {
+                        val extras = Bundle()
+                        extras.putString("EXTRA_USERNAME", jsonObject?.get("userID").toString())
+                        extras.putString("EXTRA_EMPID", jsonObject?.get("idNumber").toString())
+                        extras.putString("EXTRA_FIRSTNAME", jsonObject?.get("firstName").toString())
+                        extras.putString("EXTRA_MIDDLENAME", jsonObject?.get("middleName").toString())
+                        extras.putString("EXTRA_LASTNAME", jsonObject?.get("lastName").toString())
+                        extras.putString("EXTRA_EMAIL", jsonObject?.get("emailAddress").toString())
+                        extras.putString("EXTRA_MOBILE", jsonObject?.get("mobileNumber").toString())
+                        extras.putString("EXTRA_LANDLINE", jsonObject?.get("landline").toString())
+                        this.putExtras(extras)
+                    }
+                    startActivity(intent)
+                }
+            }
+            else
             {
                 val toast = Toast.makeText(
                     applicationContext,
@@ -103,9 +114,6 @@ class MainActivity : AppCompatActivity() {
                 toast.show()
             }
         }
-
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     override
@@ -118,6 +126,20 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
             true
         } else super.onKeyDown(keyCode, event)
+    }
+
+    fun isConnected(context: Context): Boolean {
+        val connectivity = context.getSystemService(
+            Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (connectivity != null) {
+            val info = connectivity.allNetworkInfo
+            if (info != null)
+                for (i in info)
+                    if (i.state == NetworkInfo.State.CONNECTED) {
+                        return true
+                    }
+        }
+        return false
     }
 
 }

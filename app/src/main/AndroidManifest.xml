@@ -4,22 +4,33 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
+            android:hardwareAccelerated="false"
+            android:largeHeap="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:usesCleartextTraffic="true">
-        <activity android:name=".Success">
+        <activity android:name=".WebView"
+                  android:configChanges="orientation|screenSize|keyboardHidden">
         </activity>
-        <activity android:name=".Update">
+        <activity android:name=".Success"
+                  android:configChanges="orientation|screenSize|keyboardHidden">
         </activity>
-        <activity android:name=".profile">
+        <activity android:name=".Update"
+                  android:configChanges="orientation|screenSize|keyboardHidden">
+        </activity>
+        <activity android:name=".Profile"
+                  android:configChanges="orientation|screenSize|keyboardHidden">
         </activity>
         <activity android:name=".MainActivity"
-                  android:windowSoftInputMode="adjustPan|adjustResize">
+                  android:windowSoftInputMode="adjustPan|adjustResize"
+                  android:configChanges="orientation|screenSize|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
