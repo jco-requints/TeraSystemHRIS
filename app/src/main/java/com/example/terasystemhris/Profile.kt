@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import com.example.terasystemhris.databinding.ActivityProfileBinding
 import kotlinx.android.synthetic.main.activity_profile.*
@@ -60,6 +61,68 @@ class Profile : AppCompatActivity() {
             }
             startActivity(intent)
         }
+
+        //logic for bottom navigation listener
+        bottom_navigation.setOnNavigationItemSelectedListener {
+            when(it.itemId){
+                R.id.logs -> {
+                    binding.apply {
+                        val intent = Intent(this@Profile, Logs::class.java).apply {
+                            val extras = Bundle()
+                            extras.putString("EXTRA_USERNAME", username_string)
+                            extras.putString("EXTRA_EMPID", empID_string)
+                            extras.putString("EXTRA_FIRSTNAME", firstname_string)
+                            extras.putString("EXTRA_MIDDLENAME", middlename_string)
+                            extras.putString("EXTRA_LASTNAME", lastname_string)
+                            extras.putString("EXTRA_EMAIL", email_string)
+                            extras.putString("EXTRA_MOBILE", mobile_string)
+                            extras.putString("EXTRA_LANDLINE", landline_string)
+                            this.putExtras(extras)
+                        }
+                        startActivity(intent)
+                    }
+                    true
+                }
+                R.id.leaves -> {
+                    binding.apply {
+                        val intent = Intent(this@Profile, Leaves::class.java).apply {
+                            val extras = Bundle()
+                            extras.putString("EXTRA_USERNAME", username_string)
+                            extras.putString("EXTRA_EMPID", empID_string)
+                            extras.putString("EXTRA_FIRSTNAME", firstname_string)
+                            extras.putString("EXTRA_MIDDLENAME", middlename_string)
+                            extras.putString("EXTRA_LASTNAME", lastname_string)
+                            extras.putString("EXTRA_EMAIL", email_string)
+                            extras.putString("EXTRA_MOBILE", mobile_string)
+                            extras.putString("EXTRA_LANDLINE", landline_string)
+                            this.putExtras(extras)
+                        }
+                        startActivity(intent)
+                    }
+                    true
+                }
+                R.id.clients -> {
+                    binding.apply {
+                        val intent = Intent(this@Profile, Clients::class.java).apply {
+                            val extras = Bundle()
+                            extras.putString("EXTRA_USERNAME", username_string)
+                            extras.putString("EXTRA_EMPID", empID_string)
+                            extras.putString("EXTRA_FIRSTNAME", firstname_string)
+                            extras.putString("EXTRA_MIDDLENAME", middlename_string)
+                            extras.putString("EXTRA_LASTNAME", lastname_string)
+                            extras.putString("EXTRA_EMAIL", email_string)
+                            extras.putString("EXTRA_MOBILE", mobile_string)
+                            extras.putString("EXTRA_LANDLINE", landline_string)
+                            this.putExtras(extras)
+                        }
+                        startActivity(intent)
+                    }
+                    true
+                }
+                else -> false
+            }
+        } //end of OnNavigationItemSelectedListener
+
     }
 
     private fun maskEmail(email: String?): String{

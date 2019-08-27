@@ -3,34 +3,46 @@
           package="com.example.terasystemhris">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
             android:allowBackup="true"
+            android:hardwareAccelerated="false"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
+            android:largeHeap="true"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
-            android:hardwareAccelerated="false"
-            android:largeHeap="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:usesCleartextTraffic="true">
-        <activity android:name=".WebView"
-                  android:configChanges="orientation|screenSize|keyboardHidden">
+        <activity android:name=".Clients">
         </activity>
-        <activity android:name=".Success"
-                  android:configChanges="orientation|screenSize|keyboardHidden">
+        <activity android:name=".Leaves">
         </activity>
-        <activity android:name=".Update"
-                  android:configChanges="orientation|screenSize|keyboardHidden">
+        <activity
+                android:name=".Logs"
+                android:configChanges="orientation|screenSize|keyboardHidden">
         </activity>
-        <activity android:name=".Profile"
-                  android:configChanges="orientation|screenSize|keyboardHidden">
+        <activity
+                android:name=".WebView"
+                android:configChanges="orientation|screenSize|keyboardHidden">
         </activity>
-        <activity android:name=".MainActivity"
-                  android:windowSoftInputMode="adjustPan|adjustResize"
-                  android:configChanges="orientation|screenSize|keyboardHidden">
+        <activity
+                android:name=".Success"
+                android:configChanges="orientation|screenSize|keyboardHidden">
+        </activity>
+        <activity
+                android:name=".Update"
+                android:configChanges="orientation|screenSize|keyboardHidden">
+        </activity>
+        <activity
+                android:name=".Profile"
+                android:configChanges="orientation|screenSize|keyboardHidden">
+        </activity>
+        <activity
+                android:name=".MainActivity"
+                android:configChanges="orientation|screenSize|keyboardHidden"
+                android:windowSoftInputMode="adjustPan|adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

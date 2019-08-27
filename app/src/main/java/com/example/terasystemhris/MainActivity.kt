@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity(), NetworkRequestInterface {
             {
                 jsonObject = jsonObject.getJSONObject("user")
                 binding.apply {
-                    val intent = Intent(this@MainActivity, Profile::class.java).apply {
+                    val intent = Intent(this@MainActivity, Logs::class.java).apply {
                         val extras = Bundle()
                         extras.putString("EXTRA_USERNAME", jsonObject?.get("userID").toString())
                         extras.putString("EXTRA_EMPID", jsonObject?.get("idNumber").toString())
@@ -107,10 +107,10 @@ class MainActivity : AppCompatActivity(), NetworkRequestInterface {
             else
             {
                 val toast = Toast.makeText(
-                    applicationContext,
-                    "Invalid user name or password",
-                    Toast.LENGTH_SHORT
-                )
+                applicationContext,
+                "Invalid user name or password",
+                Toast.LENGTH_SHORT
+            )
                 toast.show()
             }
         }

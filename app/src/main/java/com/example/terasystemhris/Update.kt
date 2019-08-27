@@ -42,7 +42,7 @@ class Update : AppCompatActivity(), NetworkRequestInterface {
         val email_string = extras?.getString("EXTRA_EMAIL")
         val mobile_string = extras?.getString("EXTRA_MOBILE")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            landline_edit.addTextChangedListener(PhoneNumberFormattingTextWatcher("PH"))
+            landline_edit.addTextChangedListener(PhoneNumberFormattingTextWatcher())
         }
         val landline_string = extras?.getString("EXTRA_LANDLINE")
         var profile_name: String
